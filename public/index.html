@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Job Application Verification</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+    label { display: block; margin: 10px 0 5px; }
+    input, textarea { width: 100%; padding: 8px; margin-bottom: 10px; }
+    button { background-color: #4CAF50; color: white; padding: 10px 20px; border: none; cursor: pointer; }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <h1>Job Application Verification</h1>
+  <p>Submit your details to verify your qualifications and apply for jobs.</p>
+  <form id="applicationForm" enctype="multipart/form-data">
+    <label for="name">Full Name *</label>
+    <input type="text" id="name" name="name" required>
+    <label for="email">Email *</label>
+    <input type="email" id="email" name="email" required>
+    <label for="phone">Phone Number</label>
+    <input type="tel" id="phone" name="phone">
+    <label for="address">Address</label>
+    <textarea id="address" name="address" rows="4"></textarea>
+    <label for="education">Education (Degree, Institution, Year) *</label>
+    <textarea id="education" name="education" rows="4" required></textarea>
+    <label for="experience">Professional Experience (Job Title, Company, Dates) *</label>
+    <textarea id="experience" name="experience" rows="4" required></textarea>
+    <label for="references">References (Name, Contact Info)</label>
+    <textarea id="references" name="references" rows="4"></textarea>
+    <label for="resume">Upload Resume (PDF) *</label>
+    <input type="file" id="resume" name="resume" accept=".pdf" required>
+    <label for="backgroundCheck">I consent to a background check</label>
+    <input type="checkbox" id="backgroundCheck" name="backgroundCheck">
+    <button type="submit">Submit Application</button>
+  </form>
+  <p id="response"></p>
+  <script>
+    document.getElementById('applicationForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      try {
+        const response = await fetch('/api/submit', { method: 'POST', body: formData });
+        const result = await response.json();
+        document.getElementById('response').textContent = result.message;
+      } catch (error) {
+        document.getElementById('response').textContent = 'Error submitting form. Please try again.';
+      }
+    });
+  </script>
+</body>
+</html>
