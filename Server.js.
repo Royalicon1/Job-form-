@@ -1,0 +1,22 @@
+const express = require('express');
+const multer = require('multer');
+const fs = require('fs');
+const app = express();
+
+const upload = multer({ dest: 'uploads/' });
+app.use(express.json());
+app.use(express.static('public'));
+
+app.post('/api/submit', upload.single('resume'), (req, res) => {
+  const { name, email, phone, address, education, experience, references, backgroundCheck } = req.body;
+  const resumePath = req.file ? req.file.filename : 'No resume uploaded';
+  const application = { name, email, phone, address, education, experience, references, backgroundCheck: backgroundCheck === 'on', resumePath, timestamp: new Date() };
+  try {
+    fs.appendFileSync('applications.json', JSON.stringify(application) + '\n');
+    res.json({ message: 'Application submitted successfully! You will be notified within 5-7 business days.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error submitting application.' });
+  }
+});
+
+app.listen(process.env.PORT || 3000, () => console.log('Server running'));
